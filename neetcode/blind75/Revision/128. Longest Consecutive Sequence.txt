@@ -1,0 +1,78 @@
+/*
+https://leetcode.com/problems/longest-consecutive-sequence
+
+Given an unsorted array of integers nums, return the length of the longest consecutive elements sequence.
+
+You must write an algorithm that runs in O(n) time.
+
+ 
+
+Example 1:
+
+Input: nums = [100,4,200,1,3,2]
+Output: 4
+Explanation: The longest consecutive elements sequence is [1, 2, 3, 4]. Therefore its length is 4.
+Example 2:
+
+Input: nums = [0,3,7,2,5,8,4,6,0,1]
+Output: 9
+ 
+
+Constraints:
+
+0 <= nums.length <= 10^5
+-10^9 <= nums[i] <= 10^9
+*/
+
+//TC:O(n), SC:O(n)
+class Solution {
+    public int longestConsecutive(int[] nums) {
+        Map<Integer, Integer> lcs = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            lcs.put(nums[i], -1);
+        }
+
+        int maxLen = 0;
+        for (int i = 0; i < nums.length; i++) {
+            int num = nums[i];
+            int len = 0;
+            while (lcs.containsKey(num)) {
+                lcs.remove(num);
+                num--;
+            }
+            len += nums[i] - num;
+            num = nums[i] + 1;
+            while (lcs.containsKey(num)) {
+                lcs.remove(num);
+                num++;
+            }
+            len += num - nums[i] - 1;
+            maxLen = Math.max(maxLen, len);
+        }
+
+        return maxLen;
+    }
+}
+
+//TC:O(n), SC:O(n)
+class Solution {
+    public int longestConsecutive(int[] nums) {
+        Set<Integer> lcs = new HashSet<>();
+        for (int n : nums) {
+            lcs.add(n);
+        }
+
+        int maxLen = 0;
+        for (int n : nums) {
+            if (!lcs.contains(n - 1)) {
+                int next = n + 1;
+                while (lcs.contains(next)) {
+                    next++;
+                }
+                maxLen = Math.max(maxLen, next - n);
+            }
+        }
+
+        return maxLen;
+    }
+}
