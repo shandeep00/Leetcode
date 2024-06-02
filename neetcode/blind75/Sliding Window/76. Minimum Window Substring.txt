@@ -1,0 +1,78 @@
+/*
+https://leetcode.com/problems/minimum-window-substring/description/
+
+Given two strings s and t of lengths m and n respectively, return the minimum window 
+substring
+ of s such that every character in t (including duplicates) is included in the window. If there is no such substring, return the empty string "".
+
+The testcases will be generated such that the answer is unique.
+
+Example 1:
+
+Input: s = "ADOBECODEBANC", t = "ABC"
+Output: "BANC"
+Explanation: The minimum window substring "BANC" includes 'A', 'B', and 'C' from string t.
+Example 2:
+
+Input: s = "a", t = "a"
+Output: "a"
+Explanation: The entire string s is the minimum window.
+Example 3:
+
+Input: s = "a", t = "aa"
+Output: ""
+Explanation: Both 'a's from t must be included in the window.
+Since the largest window of s only has one 'a', return empty string.
+ 
+
+Constraints:
+
+m == s.length
+n == t.length
+1 <= m, n <= 10^5
+s and t consist of uppercase and lowercase English letters.
+ 
+
+Follow up: Could you find an algorithm that runs in O(m + n) time?
+*/
+
+//TC:O(n), SC:O(1)
+class Solution {
+    public String minWindow(String s, String t) {
+        if (s.length() < t.length()) {
+            return "";
+        }
+
+        int[] countT = new int[256];
+        for (int i = 0; i < t.length(); i++) {
+            countT[t.charAt(i)]++;
+        }
+
+        int[] countS = new int[256];
+        int start = 0, minLen = Integer.MAX_VALUE;
+        String out = "";
+        for (int i = 0; i < s.length(); i++) {
+            countS[s.charAt(i)]++;
+            while (isMatch(countS, countT)) {
+                if (i - start + 1 < minLen) {
+                    out = s.substring(start, i + 1);
+                    minLen = i - start + 1;
+                }
+                countS[s.charAt(start)]--;
+                start++;
+            }
+        }
+
+        return out;
+    }
+
+    public boolean isMatch(int[] countS, int[] countT) {
+        for (int i = 0; i < 256; i++) {
+            if (countT[i] > 0 && countS[i] < countT[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
